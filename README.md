@@ -19,9 +19,6 @@ A modern, secure REST API-based invoice management system built with Symfony 7, 
 - [API Documentation](#api-documentation)
 - [Database Schema](#database-schema)
 - [Authentication & Security](#authentication--security)
-- [Testing](#testing)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## 🎯 Overview
@@ -514,78 +511,6 @@ CREATE TABLE invoice_items (
 ✅ Secure password hashing  
 ✅ Token-based authentication  
 ✅ Environment variable protection  
-
-## 🧪 Testing
-
-### Running Tests
-
-```bash
-# Run all tests
-php bin/phpunit
-
-# Run specific test
-php bin/phpunit tests/Controller/InvoiceControllerTest.php
-
-# Run with coverage
-php bin/phpunit --coverage-html coverage
-```
-
-### Manual Testing
-
-Use the provided Postman collection or curl commands from [`API_DOCUMENTATION.md`](API_DOCUMENTATION.md)
-
-## 🚢 Deployment
-
-### Production Checklist
-
-- [ ] Change `APP_ENV=prod` in `.env`
-- [ ] Generate strong `APP_SECRET`
-- [ ] Generate strong `JWT_SECRET`
-- [ ] Update database credentials
-- [ ] Configure CORS for your domain
-- [ ] Enable HTTPS
-- [ ] Set up database backups
-- [ ] Configure logging
-- [ ] Set up monitoring
-
-### Docker Production Deployment
-
-```bash
-# Build production image
-docker compose -f docker-compose.prod.yml build
-
-# Run in production mode
-docker compose -f docker-compose.prod.yml up -d
-
-# Run migrations
-docker compose exec app php bin/console doctrine:migrations:migrate --no-interaction
-```
-
-### Traditional Server Deployment
-
-1. Upload files to server
-2. Install dependencies: `composer install --no-dev --optimize-autoloader`
-3. Configure web server (Apache/Nginx)
-4. Run migrations: `php bin/console doctrine:migrations:migrate`
-5. Clear cache: `php bin/console cache:clear --env=prod`
-6. Set proper file permissions
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these guidelines:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
-
-### Code Style
-
-- Follow PSR-12 coding standard
-- Use type declarations
-- Write PHPDoc comments
-- Keep functions small and focused
 
 ## 📝 License
 
