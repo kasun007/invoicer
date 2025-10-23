@@ -35,8 +35,9 @@ This application serves as a backend system for:
 1. **User Management**: Secure user registration, authentication, and profile management
 2. **Customer Management**: Track and manage customer information
 3. **Invoice Generation**: Create detailed invoices with line items
-4. **Automated Calculations**: Automatic computation of subtotals, taxes, discounts, and totals
-5. **Invoice Tracking**: Monitor invoice status (draft, sent, paid, overdue, cancelled)
+4. **Reports & Analytics**: Generate business reports and extract invoice data
+5. **Automated Calculations**: Automatic computation of subtotals, taxes, discounts, and totals
+6. **Invoice Tracking**: Monitor invoice status (draft, sent, paid, overdue, cancelled)
 6. **Secure API Access**: JWT-based authentication for all operations
 
 ### Who Is This For?
@@ -45,6 +46,7 @@ This application serves as a backend system for:
 - **Small Businesses**: Track billing and customer payments
 - **Developers**: Use as a backend for invoice management applications
 - **Accounting Systems**: Integrate invoice functionality into larger systems
+- **Business Analytics**: Generate reports on revenue, customers, and overdue invoices
 
 ## ✨ Features
 
@@ -73,6 +75,13 @@ This application serves as a backend system for:
   - Multiple currency support
   - Invoice status tracking
   - Custom notes and payment terms
+
+- ✅ **Reports & Analytics**
+  - Business summary reports (revenue, overdue invoices, customer counts)
+  - Complete invoice data extraction for all invoices
+  - Customer statistics and top revenue generators
+  - Overdue invoice tracking
+  - Logo upload for PDF customization
 
 - ✅ **Invoice Items**
   - Detailed line items per invoice
@@ -141,6 +150,7 @@ invoicer/
 │   │   ├── AuthController.php
 │   │   ├── CustomerController.php
 │   │   ├── InvoiceController.php
+│   │   ├── ReportController.php
 │   │   └── UserController.php
 │   ├── Entity/              # Database models
 │   │   ├── User.php
@@ -384,7 +394,6 @@ Complete API documentation is available in [`API_DOCUMENTATION.md`](API_DOCUMENT
 - `GET /api/customers` - List all customers
 - `GET /api/customers/{id}` - Get customer by ID
 - `POST /api/customers` - Create customer
-- `PUT /api/customers/{id}` - Update customer
 - `DELETE /api/customers/{id}` - Delete customer
 
 #### Invoices
@@ -393,6 +402,13 @@ Complete API documentation is available in [`API_DOCUMENTATION.md`](API_DOCUMENT
 - `POST /api/invoices` - Create invoice with items
 - `PUT /api/invoices/{id}` - Update invoice
 - `DELETE /api/invoices/{id}` - Delete invoice
+- `POST /api/invoices/upload-logo` - Upload company logo
+- `GET /api/invoices/overdue` - Get overdue invoices
+
+#### Reports
+- `GET /api/reports/summary` - Business summary report
+- `GET /api/reports/all-invoices` - Extract all invoice data
+- `GET /api/reports/customer-stats` - Customer statistics
 
 #### Users
 - `GET /api/users` - List all users
