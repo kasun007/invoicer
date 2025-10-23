@@ -21,7 +21,8 @@ Authorization: Bearer YOUR_JWT_TOKEN
 1. [Authentication](#authentication-endpoints)
 2. [Customers](#customer-endpoints)
 3. [Invoices](#invoice-endpoints)
-4. [Users](#user-endpoints)
+4. [Reports](#report-endpoints)
+5. [Users](#user-endpoints)
 
 ---
 
@@ -627,6 +628,126 @@ Retrieve a list of overdue invoices.
     "dueDate": "2025-10-15",
     "totalAmount": 1667.59,
     "status": "sent"
+  }
+]
+```
+
+---
+
+## Report Endpoints
+
+### 1. Get Summary Report
+
+Get an overall summary of invoices, revenue, and customer statistics.
+
+**Endpoint:** `GET /api/reports/summary`
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer YOUR_JWT_TOKEN"
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "totalInvoices": 25,
+  "totalRevenue": 45678.90,
+  "overdueInvoices": {
+    "count": 3,
+    "totalAmount": 1234.56
+  },
+  "invoicesByStatus": {
+    "draft": 5,
+    "sent": 10,
+    "paid": 8,
+    "cancelled": 2
+  },
+  "totalCustomers": 15,
+  "generatedAt": "2025-10-24 14:30:00"
+}
+```
+
+---
+
+### 3. Get All Invoices
+
+Extract complete data for all invoices including items and customer details.
+
+**Endpoint:** `GET /api/reports/all-invoices`
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer YOUR_JWT_TOKEN"
+}
+```
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "invoiceNumber": "INV-2025-001",
+    "customer": {
+      "id": 1,
+      "name": "Acme Corporation",
+      "email": "contact@acme.com"
+    },
+    "issueDate": "2025-10-20",
+    "dueDate": "2025-11-20",
+    "status": "paid",
+    "currency": "USD",
+    "subtotal": 1500.00,
+    "taxRate": 10.00,
+    "taxAmount": 150.00,
+    "discountAmount": 0.00,
+    "totalAmount": 1650.00,
+    "notes": "Payment due within 30 days",
+    "items": [
+      {
+        "description": "Web Development Services",
+        "quantity": 10.0,
+        "unitPrice": 150.00,
+        "lineTotal": 1500.00
+      }
+    ],
+    "createdAt": "2025-10-20 10:00:00",
+    "updatedAt": "2025-10-20 10:00:00"
+  }
+]
+```
+
+---
+
+### 4. Get Customer Statistics
+
+Get top customers by total invoice amounts.
+
+**Endpoint:** `GET /api/reports/customer-stats`
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer YOUR_JWT_TOKEN"
+}
+```
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "name": "Acme Corporation",
+    "email": "contact@acme.com",
+    "invoiceCount": 12,
+    "totalAmount": 45678.90
+  },
+  {
+    "name": "Tech Solutions Inc",
+    "email": "info@techsolutions.com", 
+    "invoiceCount": 8,
+    "totalAmount": 32109.87
   }
 ]
 ```
