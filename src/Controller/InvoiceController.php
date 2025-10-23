@@ -119,9 +119,47 @@ class InvoiceController extends AbstractController
         $this->entityManager->persist($invoice);
         $this->entityManager->flush();
 
+            // Generate and save PDF after invoice creation
+            $pdfService = new \App\Service\PdfGeneratorService(
+                __DIR__ . '/../../var/invoices'
+            );
+            $invoiceData = [
+                'company' => [
+                    'name' => 'LunarTech Solutions', // or get from config
+                    'address1' => '123 Business St',
+                    'address2' => 'City, State 12345',
+                    'logoUrl' => '/assets/images/logo.png',
+                ],
+                'invoice' => [
+                    'number' => $invoice->getInvoiceNumber(),
+                    'date' => $invoice->getIssueDate()?->format('Y-m-d'),
+                    'currency' => 'USD',
+                ],
+                'billTo' => [
+                    'name' => $customer->getName(),
+                    'email' => $customer->getEmail(),
+                    'address1' => '',
+                    'address2' => '',
+                ],
+                'items' => array_map(function($item) {
+                    return [
+                        'quantity' => $item->getQuantity(),
+                        'description' => $item->getDescription(),
+                        'unitPrice' => $item->getUnitPrice(),
+                    ];
+                }, $invoice->getItems()->toArray()),
+                'tax' => [
+                    'rate' => 0.0, // adjust as needed
+                ],
+            ];
+            $pdfFilename = 'invoice-' . $invoice->getInvoiceNumber() . '.pdf';
+            $pdfPath = $pdfService->generateInvoicePdf($invoiceData, $pdfFilename);
+
+            // Optionally, include PDF path in response
         return $this->json([
             'message' => 'Invoice created successfully',
-            'invoice' => $this->formatInvoiceResponse($invoice)
+            'invoice' => $this->formatInvoiceResponse($invoice),
+            'pdf' => $pdfPath,
         ], 201);
     }
 
@@ -290,5 +328,52 @@ class InvoiceController extends AbstractController
         }
 
         return $data;
+    }
+
+    #[Route('/upload-logo', name: 'upload_logo', methods: ['POST'])]
+    public function uploadLogo(Request $request): JsonResponse
+    {
+        $file = $request->files->get('logo');
+
+        if (!$file) {
+            return $this->json(['error' => 'No logo file provided'], 400);
+        }
+
+        // Validate file type
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+        if (!in_array($file->getMimeType(), $allowedTypes)) {
+            return $this->json(['error' => 'Invalid file type. Only JPEG, PNG, GIF, and SVG are allowed'], 400);
+        }
+
+        // Validate file size (max 2MB)
+        if ($file->getSize() > 2 * 1024 * 1024) {
+            return $this->json(['error' => 'File too large. Maximum size is 2MB'], 400);
+        }
+
+        // Generate unique filename
+        $extension = $file->guessExtension();
+        $filename = 'company-logo-' . uniqid() . '.' . $extension;
+
+        // Ensure upload directory exists
+        $uploadDir = __DIR__ . '/../../assets/images';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        try {
+            // Move file to upload directory
+            $file->move($uploadDir, $filename);
+
+            // Return the public URL path
+            $logoUrl = '/assets/images/' . $filename;
+
+            return $this->json([
+                'message' => 'Logo uploaded successfully',
+                'logoUrl' => $logoUrl,
+                'filename' => $filename
+            ]);
+        } catch (\Exception $e) {
+            return $this->json(['error' => 'Failed to upload logo: ' . $e->getMessage()], 500);
+        }
     }
 }

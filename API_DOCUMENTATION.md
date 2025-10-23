@@ -240,45 +240,7 @@ Create a new customer.
 
 ---
 
-### 4. Update Customer
-
-Update an existing customer.
-
-**Endpoint:** `PUT /api/customers/{id}`
-
-**Headers:**
-```json
-{
-  "Authorization": "Bearer YOUR_JWT_TOKEN",
-  "Content-Type": "application/json"
-}
-```
-
-**Request Body:**
-```json
-{
-  "name": "Acme Corporation Ltd",
-  "email": "contact@acme.com"
-}
-```
-
-**Response:** `200 OK`
-```json
-{
-  "id": 1,
-  "name": "Acme Corporation Ltd",
-  "email": "contact@acme.com",
-  "createdAt": "2025-10-20T10:00:00+00:00"
-}
-```
-
-**Error Responses:**
-- `404 Not Found` - Customer not found
-- `400 Bad Request` - Invalid data
-
----
-
-### 5. Delete Customer
+### 4. Delete Customer
 
 Delete a customer.
 
@@ -604,6 +566,70 @@ Delete an invoice and all its items.
 
 **Error Responses:**
 - `404 Not Found` - Invoice not found
+
+---
+
+### 6. Upload Company Logo
+
+Upload a company logo for use in PDF invoices.
+
+**Endpoint:** `POST /api/invoices/upload-logo`
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer YOUR_JWT_TOKEN",
+  "Content-Type": "multipart/form-data"
+}
+```
+
+**Request Body (Form Data):**
+- `logo` (file) - Image file (JPEG, PNG, GIF, or SVG, max 2MB)
+
+**Response:** `200 OK`
+```json
+{
+  "message": "Logo uploaded successfully",
+  "logoUrl": "/assets/images/company-logo-1234567890.png",
+  "filename": "company-logo-1234567890.png"
+}
+```
+
+**Error Responses:**
+- `400 Bad Request` - No file provided, invalid file type, or file too large
+
+---
+
+### 7. Get Overdue Invoices
+
+Retrieve a list of overdue invoices.
+
+**Endpoint:** `GET /api/invoices/overdue`
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer YOUR_JWT_TOKEN"
+}
+```
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "invoiceNumber": "INV-2025-001",
+    "customer": {
+      "id": 1,
+      "name": "Acme Corporation",
+      "email": "contact@acme.com"
+    },
+    "dueDate": "2025-10-15",
+    "totalAmount": 1667.59,
+    "status": "sent"
+  }
+]
+```
 
 ---
 
